@@ -29,6 +29,7 @@ library
   import: warnings
   exposed-modules:
     Data.HKD.Extensible
+    Data.HKD.Extensible.Label
     Data.HKD.Extensible.Optionality
 
   build-depends: base >=4.12.0.0 && <4.22
