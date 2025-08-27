@@ -1,5 +1,6 @@
 module Data.HKD.Extensible where
 
+-- base
 import Data.Kind (Type)
 
 infixr 9 :::
@@ -14,13 +15,13 @@ type family Head (phases :: Phases (aspect ': aspects)) :: aspect where
 type family Tail (phases :: Phases (aspect ': aspects)) :: Phases aspects where
   Tail (_ '::: phases) = phases
 
-type family Interpret (aspect :: Type) :: aspect -> Type -> Type
+type family Interpret (aspect :: Type) (phase :: aspect) :: Type -> Type
 
 class FunctorE (d :: Phases (aspect ': aspects) -> Type) where
   phaseMap :: PhaseMap (aspect ': aspects) p1 p2 -> d p1 -> d p2
 
-headMap :: (FunctorE d) => (forall x. Interpret aspect p1 x -> Interpret aspect p2 x) -> d (p1 '::: ps) -> d (p2 '::: ps)
-headMap f = phaseMap $ HeadMap f
+mapHead :: (FunctorE d) => (forall x. Interpret aspect p1 x -> Interpret aspect p2 x) -> d (p1 '::: ps) -> d (p2 '::: ps)
+mapHead f = phaseMap $ HeadMap f
 
 -- StandaloneKindSignatures is only available from 8.10 onwards. Remove once we drop support for lower GHCs
 #if MIN_VERSION_GLASGOW_HASKELL(8,10,0,0)
@@ -40,5 +41,11 @@ data PhaseTraversal aspects (phasesIn :: Phases aspects) (phasesOut :: Phases as
 class (FunctorE d) => TraversableE (d :: Phases (aspect ': aspects) -> Type) where
   phaseTraversal :: forall f p1 p2. (Applicative f) => PhaseTraversal (aspect ': aspects) p1 p2 f -> d p1 -> f (d p2)
 
-headTraversal :: (Applicative f, TraversableE d) => (forall x. Interpret aspect p1 x -> f (Interpret aspect p2 x)) -> d (p1 '::: ps) -> f (d (p2 '::: ps))
-headTraversal handler = phaseTraversal $ HeadTraversal handler
+traverseHead :: (Applicative f, TraversableE d) => (forall x. Interpret aspect p1 x -> f (Interpret aspect p2 x)) -> d (p1 '::: ps) -> f (d (p2 '::: ps))
+traverseHead handler = phaseTraversal $ HeadTraversal handler
+
+traverseHead_ :: forall f aspect p1 ps d. (Applicative f, TraversableE d) => (forall x. Interpret aspect p1 x -> f (Interpret aspect p1 x)) -> d (p1 '::: ps) -> f ()
+traverseHead_ handler = fmap unit . traverseHead handler
+  where
+    unit :: d (p1 '::: ps) -> ()
+    unit _ = ()
