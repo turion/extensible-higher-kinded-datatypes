@@ -1,17 +1,15 @@
-cabal-version:      3.0
-name:               extensible-higher-kinded-datatypes
-version:            0.1.0.0
--- synopsis:
--- description:
-license:            BSD-3-Clause
-license-file:       LICENSE
-author:             Manuel Bärenz
-maintainer:         mbaerenz@heilmannsoftware.de
--- copyright:
-build-type:         Simple
-extra-doc-files:    CHANGELOG.md
--- extra-source-files:
-
+cabal-version: 3.0
+name: extensible-higher-kinded-datatypes
+version: 0.1.0.0
+synopsis: Extensible higher kinded datatypes
+description: Higher kinded datatypes with extensible aspects & phases
+license: BSD-3-Clause
+license-file: LICENSE
+author: Manuel Bärenz
+maintainer: mbaerenz@heilmannsoftware.de
+category: Data
+build-type: Simple
+extra-doc-files: CHANGELOG.md
 tested-with:
   ghc ==8.6
   ghc ==8.8
@@ -25,13 +23,13 @@ tested-with:
   ghc ==9.12
 
 common warnings
-    ghc-options: -Wall
+  ghc-options: -Wall
 
 library
-    import:           warnings
-    exposed-modules:  Data.HKD.Extensible
-    -- other-modules:
-    -- other-extensions:
-    build-depends:    base >=4.12.0.0 && < 4.22
-    hs-source-dirs:   src
-    default-language: Haskell2010
+  import: warnings
+  exposed-modules: Data.HKD.Extensible
+  -- other-modules:
+  -- other-extensions:
+  build-depends: base >=4.12.0.0 && <4.22
+  hs-source-dirs: src
+  default-language: Haskell2010
