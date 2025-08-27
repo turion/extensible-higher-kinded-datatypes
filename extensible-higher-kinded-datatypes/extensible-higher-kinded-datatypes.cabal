@@ -22,27 +22,18 @@ tested-with:
   ghc ==9.10
   ghc ==9.12
 
-common warnings
+common opts
   ghc-options: -Wall
-
-library
-  import: warnings
-  exposed-modules:
-    Data.HKD.Extensible
-    Data.HKD.Extensible.Label
-    Data.HKD.Extensible.Optionality
-    Data.HKD.Extensible.Validatable
-
   build-depends:
     base >=4.12.0.0 && <4.22,
     validation ^>=1.1,
-
-  hs-source-dirs: src
-  default-language: Haskell2010
   default-extensions:
     CPP
     DataKinds
+    DerivingStrategies
     GADTs
+    GeneralizedNewtypeDeriving
+    MultiParamTypeClasses
     PolyKinds
     RankNTypes
     ScopedTypeVariables
@@ -52,3 +43,24 @@ library
   if impl(ghc >=8.10)
     default-extensions:
       StandaloneKindSignatures
+
+library
+  import: opts
+  exposed-modules:
+    Data.HKD.Extensible
+    Data.HKD.Extensible.Label
+    Data.HKD.Extensible.Optionality
+    Data.HKD.Extensible.Validatable
+
+  hs-source-dirs: src
+  default-language: Haskell2010
+
+library readme
+  import: opts
+  build-depends:
+    barbies ^>= 2.1,
+    extensible-higher-kinded-datatypes
+  hs-source-dirs: .
+  other-modules: README
+  default-language: Haskell2010
+  ghc-options: -pgmL markdown-unlit
