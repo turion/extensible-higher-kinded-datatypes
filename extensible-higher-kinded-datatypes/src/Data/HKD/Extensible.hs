@@ -15,7 +15,7 @@ type family Head (phases :: Phases (aspect ': aspects)) :: aspect where
 type family Tail (phases :: Phases (aspect ': aspects)) :: Phases aspects where
   Tail (_ '::: phases) = phases
 
-type family Interpret (aspect :: Type) :: aspect -> Type -> Type
+type family Interpret (aspect :: Type) (phase :: aspect) :: Type -> Type
 
 class FunctorE (d :: Phases (aspect ': aspects) -> Type) where
   phaseMap :: PhaseMap (aspect ': aspects) p1 p2 -> d p1 -> d p2
