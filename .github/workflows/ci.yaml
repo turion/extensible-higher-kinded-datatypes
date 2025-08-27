@@ -140,6 +140,6 @@ jobs:
         with:
           name: extensible-hkds
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix build .#${{ matrix.version }}.extensible-higher-kinded-datatypes --accept-flake-config
+      - run: nix build .#${{ matrix.version }} --accept-flake-config
       - run: nix develop .#${{ matrix.version }} --accept-flake-config -c cabal update -fdev
       - run: nix develop .#${{ matrix.version }} --accept-flake-config -c cabal test all -fdev
