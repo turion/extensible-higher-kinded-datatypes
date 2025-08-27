@@ -1,5 +1,6 @@
 module Data.HKD.Extensible where
 
+-- base
 import Data.Kind (Type)
 
 infixr 9 :::
