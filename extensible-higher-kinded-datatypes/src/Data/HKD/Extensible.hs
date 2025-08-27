@@ -43,3 +43,9 @@ class (FunctorE d) => TraversableE (d :: Phases (aspect ': aspects) -> Type) whe
 
 traverseHead :: (Applicative f, TraversableE d) => (forall x. Interpret aspect p1 x -> f (Interpret aspect p2 x)) -> d (p1 '::: ps) -> f (d (p2 '::: ps))
 traverseHead handler = phaseTraversal $ HeadTraversal handler
+
+traverseHead_ :: forall f aspect p1 ps d. (Applicative f, TraversableE d) => (forall x. Interpret aspect p1 x -> f (Interpret aspect p1 x)) -> d (p1 '::: ps) -> f ()
+traverseHead_ handler = fmap unit . traverseHead handler
+  where
+    unit :: d (p1 '::: ps) -> ()
+    unit _ = ()
