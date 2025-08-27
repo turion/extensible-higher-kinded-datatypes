@@ -28,8 +28,19 @@ common warnings
 library
   import: warnings
   exposed-modules: Data.HKD.Extensible
-  -- other-modules:
-  -- other-extensions:
   build-depends: base >=4.12.0.0 && <4.22
   hs-source-dirs: src
   default-language: Haskell2010
+  default-extensions:
+    CPP
+    DataKinds
+    GADTs
+    PolyKinds
+    RankNTypes
+    ScopedTypeVariables
+    TypeFamilies
+    TypeOperators
+
+  if impl(ghc >=8.10)
+    default-extensions:
+      StandaloneKindSignatures
