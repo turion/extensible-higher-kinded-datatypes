@@ -52,7 +52,16 @@
           haskellPackagesPerVersionExtended = mapAttrs
             (_: haskellPackages:
               haskellPackages.override (_: {
-                inherit overrides;
+                overrides = lib.composeManyExtensions [
+                  overrides
+                  (hfinal: hprev: {
+                    extensible-higher-kinded-datatypes = pkgs.haskell.lib.overrideCabal hprev.extensible-higher-kinded-datatypes (_: {
+                      libraryToolDepends = [
+                        pkgs.haskellPackages.markdown-unlit
+                      ];
+                    });
+                  })
+                ];
               })
             )
             haskellPackagesPerVersion;
@@ -79,6 +88,7 @@
               ]) ++ (with pkgs.haskellPackages; [
                 cabal-install
                 cabal-gild
+                markdown-unlit
               ]);
             })
             haskellPackagesPerVersionExtended;

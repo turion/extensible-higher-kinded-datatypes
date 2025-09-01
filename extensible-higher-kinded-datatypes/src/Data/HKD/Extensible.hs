@@ -1,7 +1,7 @@
 module Data.HKD.Extensible where
 
 -- base
-import Data.Kind (Type)
+import Data.Kind (Type, Constraint)
 
 infixr 9 :::
 
@@ -49,3 +49,19 @@ traverseHead_ handler = fmap unit . traverseHead handler
   where
     unit :: d (p1 '::: ps) -> ()
     unit _ = ()
+
+#if MIN_VERSION_GLASGOW_HASKELL(8,10,0,0)
+type PhaseZip :: forall (aspects :: [Type]) -> Phases aspects -> Phases aspects -> Phases aspects -> Type
+#endif
+data PhaseZip aspects (phases1 :: Phases aspects) (phases2 :: Phases aspects) (phases3 :: Phases aspects) where
+  HeadZip :: (forall x . Interpret aspect p1 x -> Interpret aspect p2 x -> Interpret aspect p3 x) -> PhaseZip (aspect ': aspects) (p1 '::: ps) (p2 '::: ps) (p3 '::: ps)
+  TailZip :: PhaseZip aspects phases1 phases2 phases3 -> PhaseZip (aspect ': aspects) (p '::: phases1) (p '::: phases2) (p '::: phases3)
+
+class (FunctorE d) => ApplicativeE (d :: Phases (aspect ': aspects) -> Type) where
+  phaseZip :: PhaseZip (aspect ': aspects) phases1 phases2 phases3 -> d phases1 -> d phases2 -> d phases3
+
+zipWithHead :: ApplicativeE d => (forall x . Interpret aspect p1 x -> Interpret aspect p2 x -> Interpret aspect p3 x) -> d (p1 '::: phases) -> d (p2 '::: phases) -> d (p3 '::: phases)
+zipWithHead f = phaseZip $ HeadZip f
+
+class ConstraintsE (d :: Phases aspects -> Type) where
+  type AllPhases (c :: (Type -> Type) -> Constraint) d :: Constraint
