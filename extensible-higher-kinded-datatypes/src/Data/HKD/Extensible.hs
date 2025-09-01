@@ -1,7 +1,7 @@
 module Data.HKD.Extensible where
 
 -- base
-import Data.Kind (Type)
+import Data.Kind (Type, Constraint)
 
 infixr 9 :::
 
@@ -62,3 +62,6 @@ class (FunctorE d) => ApplicativeE (d :: Phases (aspect ': aspects) -> Type) whe
 
 zipWithHead :: ApplicativeE d => (forall x . Interpret aspect p1 x -> Interpret aspect p2 x -> Interpret aspect p3 x) -> d (p1 '::: phases) -> d (p2 '::: phases) -> d (p3 '::: phases)
 zipWithHead f = phaseZip $ HeadZip f
+
+class ConstraintsE (d :: Phases aspects -> Type) where
+  type AllPhases (c :: (Type -> Type) -> Constraint) d :: Constraint
